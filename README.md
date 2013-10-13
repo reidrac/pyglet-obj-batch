@@ -4,7 +4,7 @@ Wavefront OBJ renderer using pyglet's Batch class
 Based on `pyglet/contrib/model/model/obj.py` this module can load a Wavefront
 object to be added to a Batch.
 
-The module can be invoked for testing, for example:
+The module can be invoked directly for testing, for example:
 
     python obj_batch.py player.obj
 
@@ -17,7 +17,7 @@ First load the object:
 
     obj = OBJ("object.obj")
 
-Alternatively use you can use `OBJ.from_resource(filename)` to load the object,
+Alternatively you can use `OBJ.from_resource(filename)` to load the object,
 material, textures, etc using pyglet's resource framework.
 
 After the object is loaded, add it to a Batch:
