@@ -33,6 +33,9 @@ LICENSE
 I think the original source is in the public domain, so I keep the same
 license for this version.
 
+This code has been contributed to pyglet and it can be found on `contrib/`
+directory of pyglet's distribution.
+
 The example model is licensed CC BY-NC 3.0.
 
 Juan J. Martinez <jjm@usebox.net>
