@@ -14,6 +14,9 @@ import logging
 from pyglet.gl import *
 from pyglet import image, resource, graphics
 
+import math
+import euclid
+
 class Material(graphics.Group):
     diffuse = [.8, .8, .8]
     ambient = [.2, .2, .2]
@@ -89,6 +92,8 @@ class OBJ(object):
         self.materials = {}
         self.meshes = {}        # Name mapping
         self.mesh_list = []     # Also includes anonymous meshes
+
+        self.transforms = euclid.Matrix4.new_identity()
 
         if file is None:
             file = open(filename, 'r')
@@ -182,15 +187,39 @@ class OBJ(object):
                     tlast = tex_coords[t_index]
                     vlast = vertices[v_index]
 
+    def load_identity(self):
+        '''Discard any transformation'''
+        self.transforms.identity()
+
+    def translate(self, x, y, z):
+        self.transforms.translate(x, y, z)
+
+    def rotate(self, angle, x, y, z):
+        self.transforms.rotate_axis(math.pi*angle/180.0, euclid.Vector3(x, y, z))
+
     def add_to(self, batch):
-        '''Add the meshes to a batch'''
+        '''Add the meshes to a batch applying model transformations'''
         for mesh in self.mesh_list:
             for group in mesh.groups:
-                batch.add(len(group.vertices)//3,
+                vertices = []
+                normals = []
+                for index in xrange(0, len(group.vertices), 3):
+                    tv = self.transforms * euclid.Point3(group.vertices[index],
+                                                         group.vertices[index+1],
+                                                         group.vertices[index+2]
+                                                         )
+                    vertices.extend(tv[:])
+                    tn = self.transforms * euclid.Point3(group.normals[index],
+                                                         group.normals[index+1],
+                                                         group.normals[index+2]
+                                                         )
+                    normals.extend(tn[:])
+
+                batch.add(len(vertices)//3,
                           GL_TRIANGLES,
                           group.material,
-                          ('v3f/static', tuple(group.vertices)),
-                          ('n3f/static', tuple(group.normals)),
+                          ('v3f/static', tuple(vertices)),
+                          ('n3f/static', tuple(normals)),
                           ('t2f/static', tuple(group.tex_coords)),
                           )
 

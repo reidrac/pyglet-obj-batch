@@ -20,11 +20,19 @@ First load the object:
 Alternatively you can use `OBJ.from_resource(filename)` to load the object,
 material, textures, etc using pyglet's resource framework.
 
-After the object is loaded, add it to a Batch:
+After the object is loaded, add it to a batch:
 
     obj.add_to(batch)
 
 Then you only have to draw your batch!
+
+You can also apply transformations to the meshes before adding them to the
+batch:
+
+    obj.load_identity() # only needed to discard any existing transformation
+    obj.translate(0, 1, 0)
+    obj.rotate(90, 1, 0, 0)
+    obj.add_to(batch)
 
 
 LICENSE
