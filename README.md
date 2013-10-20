@@ -32,6 +32,7 @@ batch:
     obj.load_identity() # only needed to discard any existing transformation
     obj.translate(0, 1, 0)
     obj.rotate(90, 1, 0, 0)
+    obj.scale(2, 2, 2)
     obj.add_to(batch)
 
 

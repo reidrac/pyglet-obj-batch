@@ -94,6 +94,7 @@ class OBJ(object):
         self.mesh_list = []     # Also includes anonymous meshes
 
         self.transforms = euclid.Matrix4.new_identity()
+        self.normalize = False
 
         if file is None:
             file = open(filename, 'r')
@@ -190,12 +191,17 @@ class OBJ(object):
     def load_identity(self):
         '''Discard any transformation'''
         self.transforms.identity()
+        self.normalize = False
 
     def translate(self, x, y, z):
         self.transforms.translate(x, y, z)
 
     def rotate(self, angle, x, y, z):
         self.transforms.rotate_axis(math.pi*angle/180.0, euclid.Vector3(x, y, z))
+
+    def scale(self, x, y, z):
+        self.transforms.scale(x, y, z)
+        self.normalize = True
 
     def add_to(self, batch):
         '''Add the meshes to a batch applying model transformations'''
@@ -213,6 +219,8 @@ class OBJ(object):
                                                          group.normals[index+1],
                                                          group.normals[index+2]
                                                          )
+                    if self.normalize:
+                        tn = tn.normalized()
                     normals.extend(tn[:])
 
                 batch.add(len(vertices)//3,
